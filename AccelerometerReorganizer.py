@@ -42,9 +42,8 @@ try:
 
 	for lists, name in zip(all_list, name_list):
 		pd.DataFrame(lists).plot(title=name)
+		plt.show()
 
 
-		
-	
 finally:
 	data_file.close()
