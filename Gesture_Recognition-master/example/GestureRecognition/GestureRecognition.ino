@@ -198,25 +198,4 @@ void loop(){
             }
         }
     }
-    
-
-//    return_val = callAWSLambda(0);
-//    if (return_val == "0") {
-//      toggleHue(return_val);
-//      Serial.println("TEST1 COMPLETE");
-//    }
-//
-//    return_val = callAWSLambda(1);
-//    if (return_val == "0") {
-//      Serial.println("TEST2 COMPLETE");
-//    }
-//
-//    return_val = callAWSLambda(1);
-//    if (return_val == "1") {
-//      Serial.println("TEST3 COMPLETE");
-//    }
-
-    while(true);
-    
-
 }
