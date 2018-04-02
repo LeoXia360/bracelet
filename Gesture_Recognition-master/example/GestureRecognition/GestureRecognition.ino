@@ -47,7 +47,7 @@ const int MAX_NUM_SUPPORTED_GESTURES = 4;
 Gesture gesture;
 
 const String AWS_API_GATEWAY_URL = "https://q4ur7dt6q7.execute-api.us-west-2.amazonaws.com/beta";
-const String PHILLIPS_HUE_IP_ADDRESS = "192.168.1.3";
+const String PHILLIPS_HUE_IP_ADDRESS = "172.20.10.4";
 
 void setup(){
     Bridge.begin();
@@ -91,7 +91,7 @@ String turnHueLightOn(){
     p.addParameter("PUT");
     p.addParameter("-d");
     p.addParameter("{\"on\":true}");
-    p.addParameter("http://192.168.1.3/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/groups/1/action");
+    p.addParameter("http://172.20.10.4/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/groups/1/action");
     p.run();
 
     String return_val = readProcessReturn(p);
@@ -106,7 +106,7 @@ String turnHueLightOff(){
     p.addParameter("PUT");
     p.addParameter("-d");
     p.addParameter("{\"on\":false}");
-    p.addParameter("http://192.168.1.3/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/groups/1/action");
+    p.addParameter("http://172.20.10.4/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/groups/1/action");
     p.run();
   
     String return_val = readProcessReturn(p);
@@ -121,7 +121,7 @@ String getHueUsername() {
     p.addParameter("POST");
     p.addParameter("-d");
     p.addParameter("{\"devicetype\":\"Console\"}");
-    p.addParameter("192.168.1.3/api");
+    p.addParameter("172.20.10.4/api");
     p.run();
     
     String return_val = readProcessReturn(p);
@@ -136,7 +136,7 @@ String pressHueLinkButton() {
     p.addParameter("PUT");
     p.addParameter("-d");
     p.addParameter("{\"linkbutton\": true}");
-    p.addParameter("http://192.168.1.3/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/config");
+    p.addParameter("http://172.20.10.4/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/config");
     p.run();
   
     String return_val = readProcessReturn(p);
@@ -153,7 +153,7 @@ String setHueLightColor(int s, int h) {
     p.addParameter("PUT");
     p.addParameter("-d");
     p.addParameter("{\"on\":true, \"sat\":" + saturation + ", \"bri\":254,\"hue\":" + hue + "}");
-    p.addParameter("http://192.168.1.3/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/lights/1/state");
+    p.addParameter("http://172.20.10.4/api/9EWT1X3Rtx9swhpulAo7SBMNML1uYpdWWnA0yumO/lights/1/state");
     p.run();
     
     String return_val = readProcessReturn(p);
@@ -172,30 +172,33 @@ void toggleHue(String command) {
 
 
 void loop(){
-    int gesture_result; 
-    if(HIGH == digitalRead(BUTTON)){
-      	delay(200);//debug
-      	if(!gesture.samplingAccelerateData){       
-      	    gesture.checkMoveStart();
-              }
-      	if(gesture.samplingAccelerateData){
-                  if(0 != gesture.getAccelerateData()){
-                      Serial.print("\r\n get accelerate data error.");
-                      gesture_result = -1; 
-                  }
-      	}
-      	if (gesture.calculatingAccelerateData){
-      	    gesture_result = gesture.calculateAccelerateData();
-            if (gesture_result >= 0 && gesture_result < MAX_NUM_SUPPORTED_GESTURES) {
-                String return_val = callAWSLambda(gesture_result);
-                if (gesture_result == 0) {
-                    // User trying to toggle Hue light
-                    toggleHue(return_val);
-                }
-                if (gesture_result == 2) {
-                    setHueLightColor(random(0, 256), random(0, 65535));
-                }
-            }
-        }
-    }
+//    int gesture_result; 
+//    if(HIGH == digitalRead(BUTTON)){
+//      	delay(200);//debug
+//      	if(!gesture.samplingAccelerateData){       
+//      	    gesture.checkMoveStart();
+//              }
+//      	if(gesture.samplingAccelerateData){
+//                  if(0 != gesture.getAccelerateData()){
+//                      Serial.print("\r\n get accelerate data error.");
+//                      gesture_result = -1; 
+//                  }
+//      	}
+//      	if (gesture.calculatingAccelerateData){
+//      	    gesture_result = gesture.calculateAccelerateData();
+//            if (gesture_result >= 0 && gesture_result < MAX_NUM_SUPPORTED_GESTURES) {
+//                String return_val = callAWSLambda(gesture_result);
+//                if (gesture_result == 0) {
+//                    // User trying to toggle Hue light
+//                    toggleHue(return_val);
+//                }
+//                if (gesture_result == 2) {
+//                    setHueLightColor(random(0, 256), random(0, 65535));
+//                }
+//            }
+//        }
+//    }
+toggleHue("0");
+Serial.println("here");
+for(;;);
 }
