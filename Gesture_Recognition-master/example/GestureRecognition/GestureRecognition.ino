@@ -1,3 +1,5 @@
+
+
 /*****************************************************************************/
 //Introduction:this sketch can be used to test gesture recognition.3-Axis Digital 
 //   Accelerometer(16g) is in need. Start to test, you should press the button and
@@ -41,12 +43,19 @@
 #include <ADXL345.h>
 #include <Process.h>
 #include <Bridge.h>
+#include <SPI.h>
+#include <b64.h>
+#include <HttpClient.h>
+
+
 
 const int BUTTON = 5;
 const int MAX_NUM_SUPPORTED_GESTURES = 4;
 Gesture gesture;
 
+const char AWS_API_GATEWAY_HOST[] = "https://q4ur7dt6q7.execute-api.us-west-2.amazonaws.com";
 const String AWS_API_GATEWAY_URL = "https://q4ur7dt6q7.execute-api.us-west-2.amazonaws.com/beta";
+const char AWS_API_GATEWAY_PATH[] = "/beta";
 const String PHILLIPS_HUE_IP_ADDRESS = "172.20.10.4";
 
 void setup(){
@@ -54,6 +63,8 @@ void setup(){
     Serial.begin(9600);
     pinMode(BUTTON, INPUT);
     gesture.init();
+    
+    while(!Serial);
 }
 
 String readProcessReturn(Process p) {
@@ -170,6 +181,40 @@ void toggleHue(String command) {
     }
 }
 
+String turnOnTPLink() {
+    Process p;
+    p.runShellCommand("/usr/bin/pretty-wifi-info.lua | grep Signal");
+
+    String return_val = readProcessReturn(p);
+    return return_val;
+    
+}
+
+String turnOffTPLink() {
+    Serial.println("turn off tp");
+    Process p;
+    p.begin("curl");
+    p.addParameter("--request");
+    p.addParameter("POST");
+    p.addParameter("https://use1-wap.tplinkcloud.com/?token=03546e31-A7XmhafFphGZ2NCjAYmzy1v HTTP/1.1");
+    p.addParameter("--data");
+    p.addParameter("{\"method\":\"passthrough\", \"params\": {\"deviceId\": \"800655B6B068CE49D0B446E32F86F56C19311152\", \"requestData\": \"{\"\\""system\"\\"":{\"\\""set_relay_state\"\\"":{\"\\""state\"\\"":0}}}\" }}");
+    p.addParameter("--header");
+    p.addParameter("{'Content-Type': 'application/json'}");
+    p.run();
+
+    String return_val = readProcessReturn(p);
+    return return_val;  
+}
+
+void toggleTPLink(String command) {
+    if (command == "1") {
+        turnOnTPLink();
+    } else {
+        turnOffTPLink();
+    }
+}
+
 
 void loop(){
 //    int gesture_result; 
@@ -198,7 +243,5 @@ void loop(){
 //            }
 //        }
 //    }
-toggleHue("0");
-Serial.println("here");
 for(;;);
 }
